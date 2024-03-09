@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+
+
+package GrpcContracts;
+
+service UserService {
+	rpc GetUser (User) returns (User);
+}
+
+message User {
+	string name = 1;	
+}

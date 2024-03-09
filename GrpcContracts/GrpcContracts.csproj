@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+		<NuGetPackagesDir>$(UserProfile)/.nuget/packages</NuGetPackagesDir>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.25.3" />
+		<PackageReference Include="Google.Protobuf.Tools" Version="3.25.3" />
+		<PackageReference Include="Grpc.Core" Version="2.46.6" />
+		<PackageReference Include="Grpc.Tools" Version="2.62.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="ts\" />
+		<Folder Include="csharp\" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+		<GoogleProtobufToolsVersion>3.25.3</GoogleProtobufToolsVersion>
+		<NuGetPackagesDir>$(UserProfile)\.nuget\packages</NuGetPackagesDir>
+		<ProtobufCompiler>$(NuGetPackagesDir)\grpc.tools\2.62.0\tools\windows_x64\protoc.exe</ProtobufCompiler>
+		<GrpcCSharpPlugin>$(NuGetPackagesDir)\grpc.tools\2.62.0\tools\windows_x64\grpc_csharp_plugin.exe</GrpcCSharpPlugin>
+		<GrpcTsPlugin>protoc-gen-ts=$(SolutionDir)\node_modules\.bin\protoc-gen-ts.cmd</GrpcTsPlugin>
+		<GrpcJsPlugin>protoc-gen-js=$(SolutionDir)\node_modules\.bin\protoc-gen-js.cmd</GrpcJsPlugin>
+		<ProtoPath>$(MSBuildProjectDirectory)\protos</ProtoPath>
+		<OutputDir>$(MSBuildProjectDirectory)\csharp</OutputDir>
+		<OutputDirTs>$(MSBuildProjectDirectory)\ts</OutputDirTs>
+	</PropertyGroup>
+
+	<Target Name="GenerateGrpcCode" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<!-- Collect all .proto files -->
+			<ProtobufFiles Include="$(ProtoPath)\*.proto" />
+		</ItemGroup>
+		<!-- Run protoc for each .proto file -->
+		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot; --csharp_out=&quot;$(OutputDir)&quot; --grpc_out=&quot;$(OutputDir)&quot; --plugin=protoc-gen-grpc=&quot;$(GrpcCSharpPlugin)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
+		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  --plugin=&quot;$(GrpcTsPlugin)&quot; --ts_out=&quot;$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
+		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  --plugin=&quot;$(GrpcJsPlugin)&quot; --js_out=&quot;$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
+	</Target>
+</Project>
