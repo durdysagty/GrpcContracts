@@ -5,9 +5,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Grpc Contracts</Title>
-		<Version>1.0.1</Version>
-		<Description>The project aims to create C# and TypeScript classes from .proto contracts.
-Add .proto contracts to the protos folder and just build the project. The class files will be in the appropriate folders.</Description>
+		<Version>1.0.3</Version>
+		<Description>
+			The project aims to create C# and TypeScript classes from .proto contracts.
+			Add .proto contracts to the protos folder and just build the project. The class files will be in the appropriate folders.
+		</Description>
 		<PackageProjectUrl>https://github.com/durdysagty/GrpcContracts</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/durdysagty/GrpcContracts</RepositoryUrl>
@@ -27,21 +29,20 @@ Add .proto contracts to the protos folder and just build the project. The class 
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="ts\" />
 		<Folder Include="csharp\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Include="..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 	<ItemGroup>
 		<!-- Include .proto files from the protos folder -->
-		<Content Include="protos\**\*.proto">
+		<!--<Content Include="protos\**\*.proto">
 			<Pack>True</Pack>
 			<PackagePath>protos\</PackagePath>
-		</Content>
+		</Content>-->
 		<!-- Include generated C# files from the csharp folder -->
 		<Content Include="csharp\**\*">
 			<Pack>True</Pack>
@@ -54,8 +55,9 @@ Add .proto contracts to the protos folder and just build the project. The class 
 		<NuGetPackagesDir>$(UserProfile)\.nuget\packages</NuGetPackagesDir>
 		<ProtobufCompiler>$(NuGetPackagesDir)\grpc.tools\2.62.0\tools\windows_x64\protoc.exe</ProtobufCompiler>
 		<GrpcCSharpPlugin>$(NuGetPackagesDir)\grpc.tools\2.62.0\tools\windows_x64\grpc_csharp_plugin.exe</GrpcCSharpPlugin>
-		<GrpcTsPlugin>protoc-gen-ts=$(SolutionDir)\node_modules\.bin\protoc-gen-ts.cmd</GrpcTsPlugin>
-		<GrpcJsPlugin>protoc-gen-js=$(SolutionDir)\node_modules\.bin\protoc-gen-js.cmd</GrpcJsPlugin>
+		<GrpcTsPlugin>protoc-gen-ts=$(SolutionDir)node_modules\.bin\protoc-gen-ts.cmd</GrpcTsPlugin>
+		<GrpcWebPlugin>protoc-gen-grpc-web=$(SolutionDir)node_modules\.bin\protoc-gen-grpc-web.cmd</GrpcWebPlugin>
+		<GrpcJsPlugin>protoc-gen-js=$(SolutionDir)node_modules\.bin\protoc-gen-js.cmd</GrpcJsPlugin>
 		<ProtoPath>$(MSBuildProjectDirectory)\protos</ProtoPath>
 		<OutputDir>$(MSBuildProjectDirectory)\csharp</OutputDir>
 		<OutputDirTs>$(MSBuildProjectDirectory)\ts</OutputDirTs>
@@ -68,7 +70,7 @@ Add .proto contracts to the protos folder and just build the project. The class 
 		</ItemGroup>
 		<!-- Run protoc for each .proto file -->
 		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot; --csharp_out=&quot;$(OutputDir)&quot; --grpc_out=&quot;$(OutputDir)&quot; --plugin=protoc-gen-grpc=&quot;$(GrpcCSharpPlugin)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
-		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  --plugin=&quot;$(GrpcTsPlugin)&quot; --ts_out=&quot;$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
-		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  --plugin=&quot;$(GrpcJsPlugin)&quot; --js_out=&quot;$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
+		<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  --plugin=&quot;$(GrpcTsPlugin)&quot; --plugin=&quot;$(GrpcJsPlugin)&quot; --plugin=&quot;$(GrpcWebPlugin)&quot; --ts_out=&quot;service=grpc-web:$(OutputDirTs)&quot; --js_out=&quot;import_style=commonjs:$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />
+		<!--<Exec Command="$(ProtobufCompiler) -I=&quot;$(ProtoPath)&quot;  plugin=&quot;$(GrpcJsPlugin)&quot; js_out=&quot;$(OutputDirTs)&quot; grpc-web_out=&quot;import_style=commonjs,mode=grpcwebtext:$(OutputDirTs)&quot; @(ProtobufFiles->'&quot;%(FullPath)&quot;', ' ')" />-->
 	</Target>
 </Project>

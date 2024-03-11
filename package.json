@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "protoc-gen-grpc-web": "^1.4.2",
     "protoc-gen-js": "^3.21.2",
     "ts-protoc-gen": "^0.15.0"
   }
