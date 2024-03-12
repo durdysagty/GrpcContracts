@@ -364,3 +364,4 @@ FodyWeavers.xsd
 **/*.ts
 **/*.js
 */csharp/*
+GrpcContracts/ts/*
