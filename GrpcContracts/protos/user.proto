@@ -4,9 +4,30 @@
 package GrpcContracts;
 
 service UserService {
-	rpc GetUser (User) returns (User);
+	rpc GetUser (GetUserRequest) returns (GetUserResponse);
+}
+
+
+message GetUserRequest{
+	oneof id {
+		string id = 1;
+		string firstName = 2;
+		string lastName = 3;
+	}
+}
+
+message GetUserResponse {
+    User user = 1;
+	string message = 2;
+	string error = 3;
 }
 
 message User {
-	string name = 1;	
+	string id = 1;
+	string firstName = 2;
+	string lastName = 3;
+	string phone = 4;
+	string address = 5;
+	string city = 6;
+	string state = 7;
 }
